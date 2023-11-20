@@ -14,7 +14,8 @@ spec:
       labels:
         app: example-service
     spec:
-      imagePullSecrets: docker-pull-secret
+      imagePullSecrets: 
+      - name: docker-pull-secret
       containers:
       - name: example-service
         image: ghcr.io/gpt-next/example-service:main
