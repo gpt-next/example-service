@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-service
+  labels:
+    app: example-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example-service
+  template:
+    metadata:
+      labels:
+        app: example-service
+    spec:
+      imagePullSecrets: docker-pull-secret
+      containers:
+      - name: example-service
+        image: ghcr.io/gpt-next/example-service:main
+        ports:
+        - containerPort: 4000
