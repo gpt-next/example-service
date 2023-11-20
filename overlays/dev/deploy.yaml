@@ -19,5 +19,6 @@ spec:
       containers:
       - name: example-service
         image: ghcr.io/gpt-next/example-service:main
+        imagePullPolicy: Always
         ports:
         - containerPort: 4000
