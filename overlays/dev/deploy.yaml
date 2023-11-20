@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: example-service
   labels:
-    app: example-service
+    app.kubernetes.io/name: example-service
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: example-service
+      app.kubernetes.io/name: example-service
   template:
     metadata:
       labels:
-        app: example-service
+        app.kubernetes.io/name: example-service
     spec:
       imagePullSecrets: 
       - name: docker-pull-secret
