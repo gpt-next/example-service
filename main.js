@@ -4,15 +4,21 @@ var { buildSchema } = require("graphql")
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
+ 
+  type SearchResult{
+    text: String!
+  }
   type Query {
-    hello: String
+    findVehicles(searchInput: String!): SearchResult!
   }
 `)
 
+
+
 // The root provides a resolver function for each API endpoint
 var root = {
-  hello: () => {
-    return "Hello world!"
+  findVehicles: (params) => {
+    return {text: `No cars found for your query ${params.searchInput}`}
   },
 }
 

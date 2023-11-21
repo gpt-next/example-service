@@ -1,0 +1,71 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Graphql swagger",
+    "version": "1.0.0",
+    "title": "Graphql swagger"
+  },
+  "servers": [
+    {
+      "url": "https://sloth-beloved-wren.ngrok-free.app/example-service"
+    }
+  ],
+  "paths": {
+    "/graphql": {
+      "post": {
+        "summary": "GraphQL",
+        "requestBody": {
+          "description": "GraphQL query",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GraphQLQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphQLResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GraphQLQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        }
+      },
+      "GraphQLResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "findVehicles": {
+                "type": "object",
+                "properties": {
+                  "text": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
