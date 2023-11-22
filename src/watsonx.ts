@@ -98,7 +98,7 @@ export class WatsonxInference extends LLM implements IBMInput{
 
   async _textGen(options: any): Promise<string>{
     try{
-      console.log(`The prompt lanchain gave me is: ${options.input}`)
+      //console.log(`The prompt lanchain gave me is: ${options.input}`)
       const res = await axios.post("https://us-south.ml.cloud.ibm.com/ml/v1-beta/generation/text?version=2023-05-29",options,{});
       return res.data.results[0]?.generated_text;
     }catch(e){

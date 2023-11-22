@@ -3,14 +3,20 @@ import { graphqlHTTP } from "express-graphql"
 import { buildSchema } from "graphql"
 import { WatsonxInference } from "./watsonx";
 import {formatPrompt} from './prompt-template';
+import { BufferMemory } from "langchain/memory";
+import { ConversationChain } from "langchain/chains";
 
-const llm = new WatsonxInference({
+const memory = new BufferMemory();
+let simpleMemory = "";
+const model = new WatsonxInference({
   apiKey: process.env["IBM_API_KEY"],
   temperature: 0,
   watsonxProjectId: process.env["WATSON_X_PROJECT_ID"],
   model: "ibm/granite-13b-chat-v1",
   maxTokens: 512
 });
+
+const chain = new ConversationChain({ llm: model, memory: memory });
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
@@ -25,8 +31,11 @@ var schema = buildSchema(`
 
 
 async function findVehicles(searchInput) {
-  const formattedPrompt = await formatPrompt(searchInput);
-  const text = await llm.predict(formattedPrompt);
+  simpleMemory  = simpleMemory + ". " + searchInput;
+  const formattedPrompt = await formatPrompt(simpleMemory);
+  //const text = await chain.call({ input: formattedPrompt });
+  const text = await model.predict(formattedPrompt);
+  console.log(text)
   return {text: `${text}`}
 }
 
