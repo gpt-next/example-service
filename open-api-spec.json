@@ -11,6 +11,33 @@
     }
   ],
   "paths": {
+    "query": {
+      "get": {
+        "summary": "GraphQL",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphQLResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/graphql": {
       "post": {
         "summary": "GraphQL",
@@ -59,7 +86,9 @@
               "findVehicles": {
                 "type": "object",
                 "properties": {
-                  "text": "string"
+                  "text": {
+                    "type": "string"
+                  }
                 }
               }
             }
