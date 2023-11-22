@@ -36,11 +36,11 @@ app.use(
 app.get("/example-service/query", (req, res) => {
  findVehicles(req.query.query)
   .then((text) => {
-    res.send(JSON.stringify({
+    res.json({
       data: {
         findVehicles: text
       }
-    }))
+    })
   })
   .catch((err) => {
     res.send(err)

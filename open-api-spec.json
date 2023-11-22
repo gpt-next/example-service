@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "query": {
+    "/query": {
       "get": {
         "summary": "GraphQL",
         "parameters": [
