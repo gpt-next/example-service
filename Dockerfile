@@ -3,4 +3,4 @@ WORKDIR /app
 ADD package*.json ./
 RUN bun install
 ADD src ./src
-CMD [ "bun", "/src/main.ts"]
+CMD [ "bun", "/app/src/main.ts"]

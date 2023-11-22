@@ -7,4 +7,5 @@ resources:
 - deploy.yaml
 - service.yaml
 - docker-pull-secret.yaml
+- example-service-secret.yaml
 
