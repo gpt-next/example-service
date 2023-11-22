@@ -1,6 +1,16 @@
-var express = require("express")
-var { graphqlHTTP } = require("express-graphql")
-var { buildSchema } = require("graphql")
+import express from 'express';
+import { graphqlHTTP } from "express-graphql"
+import { buildSchema } from "graphql"
+import { WatsonxInference } from "./watsonx";
+import {formatPrompt} from './prompt-template';
+
+const llm = new WatsonxInference({
+  apiKey: process.env["IBM_API_KEY"],
+  temperature: 0,
+  watsonxProjectId: process.env["WATSON_X_PROJECT_ID"],
+  model: "ibm/granite-13b-chat-v1",
+  maxTokens: 512
+});
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
@@ -15,7 +25,9 @@ var schema = buildSchema(`
 
 
 async function findVehicles(searchInput) {
-  return {text: `No cars found for your query ${searchInput}`}
+  const formattedPrompt = await formatPrompt(searchInput);
+  const text = await llm.predict(formattedPrompt);
+  return {text: `${text}`}
 }
 
 // The root provides a resolver function for each API endpoint
