@@ -31,10 +31,14 @@ var schema = buildSchema(`
 
 
 async function findVehicles(searchInput) {
+  if(searchInput.toLowercase().includes("thanks")) {
+    simpleMemory = "";
+  }
   simpleMemory  = simpleMemory + ". " + searchInput;
   const formattedPrompt = await formatPrompt(simpleMemory);
   //const text = await chain.call({ input: formattedPrompt });
   const text = await model.predict(formattedPrompt);
+
   console.log(text)
   return {text: `${text}`}
 }
