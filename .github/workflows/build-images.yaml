@@ -43,6 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: gpt-next/example-service:0.1.0
           labels: ${{ steps.meta.outputs.labels }}
+          
       
