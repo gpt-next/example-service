@@ -30,8 +30,8 @@ var schema = buildSchema(`
 `)
 
 
-async function findVehicles(searchInput) {
-  if(searchInput.toLowercase().includes("thanks")) {
+async function findVehicles(searchInput: string) {
+  if(searchInput.toLocaleLowerCase().includes("thanks")) {
     simpleMemory = "";
   }
   simpleMemory  = simpleMemory + ". " + searchInput;
