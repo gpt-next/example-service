@@ -34,6 +34,7 @@ async function findVehicles(searchInput: string) {
   if(searchInput.toLocaleLowerCase().includes("thanks")) {
     simpleMemory = "";
   }
+  simpleMemory = "";//DEBUG do not use memory
   simpleMemory  = simpleMemory + ". " + searchInput;
   const formattedPrompt = await formatPrompt(simpleMemory);
   //const text = await chain.call({ input: formattedPrompt });

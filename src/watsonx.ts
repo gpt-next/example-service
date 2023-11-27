@@ -11,8 +11,7 @@ export function getAccessToken(apiKey: string): ResultAsync<IBMAccessToken,Error
   });
   return ResultAsync.fromPromise(
     axios.post('https://iam.cloud.ibm.com/identity/token',params).then(res =>{
-      
-      return res.data;
+    return res.data;
     }),
   (e) => Error(`Error fetching IBM IAM access token ${e}`))
 }
@@ -72,6 +71,8 @@ export class WatsonxInference extends LLM implements IBMInput{
       if(res.isOk()){
         this.ibmAccessToken = res.value;
         axios.defaults.headers.post['Authorization'] = `Bearer ${this.ibmAccessToken.access_token}`;
+      }else{
+        console.error("could not get IBM access token")
       }
     }
     

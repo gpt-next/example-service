@@ -1,14 +1,10 @@
 import { PromptTemplate, PipelinePromptTemplate } from "langchain/prompts";
 
 const fullPrompt = PromptTemplate.fromTemplate(`
-You are a software developer.  Take the input and translate to valid output json.  Use the following schema to guide field names. The make is only Toyota or Lexus.
+You an expert developer at translating text input to JSON.  You strictly map the input below to the following graphQL schema. Only include attributes in Result.  Always include the property "stopToken": true as the last attribute.
 
-schema:
+**graphQL schema**
 {schema}
-
-when you see the following text in the input, replace it with the code:
-
-{dictionary}
 
 examples:
 {examples}
@@ -20,43 +16,55 @@ Output:
 
 const schemaPrompt =
   PromptTemplate.fromTemplate(`
-   {{ accessoriesFactory: [StringInput],
-     exteriorColor: String,
-     interiorColor: String,
-     seatingMaterial: String
-     actualAssemblyDate: DateInput
-   }}
+  type Result{{
+    paintColor: string;
+    model: Model;
+    brand: "Toyota" | "Lexus";
+    interiorMaterial: string;
+    interiorMaterialColor: string;
+    featuresFromFactory: [Feature];
+    requestedETAInDays: number;
+  }}
+  
+  union Model = ToyotaModel | LexusModel;
+  
+  enum ToyotaModel{{
+      TCOR123: "corolla"
+      TTUN13: "tundra"
+  }}
+  enum LexusModel{{
+      LIS12A: "IS"
+  }}
+  
+  enum Feature{{
+     APPLCP: "apple car play"
+     SNWTIRE: "snow tires"
+     HEATW: "heated steering wheel"
+  }}
   `);
 
-const dictPrompt = PromptTemplate.fromTemplate(`
-These are all accesories from the factory: 
-{{text: "snow tires or winter tires", code: "ST"}}
-{{text: "backup camera", code: "BC"}}
-{{text: "heated seats", code: "HS"}}
-{{text: "carplay", code: "APPL-CP"}}
-`);
 
 const examplesPrompt = PromptTemplate.fromTemplate(`
-Input: Search for green cars with black leather interior.
-Output: {{"exteriorColor": "green","interiorColor": "black","interiorMaterial": "leather","type": "car"}}
-
-Input: Find tundra trucks with leather seats. The seats should be red
-Output: {{"exteriorColor": "green","interiorColor": "black",interiorMaterial": "leather",type: "truck"}}
-
-Input: lexus suv within the next two weeks that is red with harmon kardon sound system
-Output:  {{"exteriorColor": "red","interiorFeatures": "harmon kardon sound system",type: "suv","make": "lexus","availabilityInDays": 14}}
-
-Input: Vehicles with actual assembly date of November 16th 2023.  Accessories from the factory should be heated seats and wireless apple car play. 
-Output:  {{"actualAssemblyDate": "2023-11-16","accessoriesFactory": ["heated seats","wireless apple car play"]}}
-
-Input: Accessories from the factory should be snow tires, backup camera.
-Output: {{"accessoriesFactory": ["ST","BC"]}}
-
-Input: factory accessories apple carplay
-Output: {{"accessoriesFactory": ["APPL-CP"]}}
-
-Input: heated seats and snow tires
-Output: {{"accessoriesFactory": ["HS","ST"]}}
+  Input: I would like a blue IS with interior leather black.  Car should have apple car play.  Should have interior fabric not leather.
+  Output: {{
+    "paintColor": "blue",
+    "model": "LIS12A",
+    "brand":  "Lexus",
+     "interiorMaterial": "fabric",
+     "featuresFromFactory": ["APPLCP"],
+     "stopToken": true
+  }}
+  Input: Red camero with white interior, delivered in two weeks
+  Output: {{
+    "paintColor": "red",
+    "model":  null,
+    "brand":  null,
+     "interiorMaterial": null,
+      interiorMaterialColor: "white",
+     "featuresFromFactory": [],
+     "requestedETAInDays": 14,
+     "stopToken": true
+  }}
 `);
 
 const composedPrompt = new PipelinePromptTemplate({
@@ -64,10 +72,6 @@ const composedPrompt = new PipelinePromptTemplate({
     {
       name: "schema",
       prompt: schemaPrompt,
-    },
-    {
-      name: "dictionary",
-      prompt: dictPrompt,
     },
     {
       name: "examples",
