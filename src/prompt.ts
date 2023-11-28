@@ -1,7 +1,7 @@
 import { PromptTemplate, PipelinePromptTemplate } from "langchain/prompts";
 
 const fullPrompt = PromptTemplate.fromTemplate(`
-You an expert developer at translating text input to JSON.  You strictly map the input below to the following graphQL schema. Only include attributes in Result.  Always include the property "stopToken": true as the last attribute.
+You an expert developer at translating text input to JSON.  You strictly map the input below to the following graphQL schema. Only include attributes in Result.  Always include the property "stopToken": true as the last attribute. Check your answer against the original text.
 
 **graphQL schema**
 {schema}

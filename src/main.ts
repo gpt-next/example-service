@@ -2,7 +2,8 @@ import express from 'express';
 import { graphqlHTTP } from "express-graphql"
 import { buildSchema } from "graphql"
 import { WatsonxInference } from "./watsonx";
-import {formatPrompt} from './prompt-template';
+import {formatPrompt} from './prompt';
+import {formatPrompt as formatValidationPrompt} from './validation-prompt';
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
 
@@ -12,11 +13,11 @@ const model = new WatsonxInference({
   apiKey: process.env["IBM_API_KEY"],
   temperature: 0,
   watsonxProjectId: process.env["WATSON_X_PROJECT_ID"],
-  model: "ibm/granite-13b-chat-v1",
+  model: "ibm/granite-13b-chat-v1",//"meta-llama/llama-2-70b-chat",
   maxTokens: 512
 });
 
-const chain = new ConversationChain({ llm: model, memory: memory });
+//const chain = new ConversationChain({ llm: model, memory: memory });
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
@@ -33,14 +34,15 @@ var schema = buildSchema(`
 async function findVehicles(searchInput: string) {
   if(searchInput.toLocaleLowerCase().includes("thanks")) {
     simpleMemory = "";
+    return {text: "You're welcome!"}
   }
   simpleMemory  = simpleMemory + ". " + searchInput;
+  console.log(simpleMemory)
   const formattedPrompt = await formatPrompt(simpleMemory);
-  //const text = await chain.call({ input: formattedPrompt });
-  const text = await model.predict(formattedPrompt);
-
-  console.log(text)
-  return {text: `${text}`}
+  const json = await model.predict(formattedPrompt);
+  //const formattedValidationPrompt = await formatValidationPrompt(json,simpleMemory);
+  //const validJson = await model.predict(formattedValidationPrompt);
+  return {text: `${json}`}
 }
 
 // The root provides a resolver function for each API endpoint
